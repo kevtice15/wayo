@@ -12,7 +12,7 @@ var UserSchema = new mongoose.Schema({
 });
 
 UserSchema.methods.addGroup = function(group_id){
-	this.groups.push(mongoose.Types.ObjectId(group_id));
+	this.groups.push(group_id);
 	this.save(function(err){
 		if(err){
 			console.log("error adding group to user");
@@ -21,7 +21,7 @@ UserSchema.methods.addGroup = function(group_id){
 };
 
 UserSchema.methods.addActivityItem = function(act_item_id){
-	this.activity_items.push(mongoose.Types.ObjectId(act_item_id));
+	this.activity_items.push(act_item_id);
 	this.save(function(err){
 		if(err){
 			console.log("error adding act item to user");

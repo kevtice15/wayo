@@ -136,5 +136,8 @@ module.exports = function(app, wayo){
 		wayo.addGroup(request.session, request.body);
 	});
 
+	app.get("/api/group/set", function(request, response){
+		wayo.getGroupSet(request.query, response);
+	});
 
 };

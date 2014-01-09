@@ -1,7 +1,9 @@
 $(document).ready(function(){
 
 	$.get('/api/user', function(response){
+		console.log("RESP: ", response);
 		fillUserPanel(response);
+		fillGroupsPanel(response);
 	});
 
 	$('#new-group-button').on('click', function(){
@@ -40,6 +42,16 @@ $(document).ready(function(){
 function fillUserPanel(user){
 	$('.profile-image').attr('src', user.imageUrl);
 	$('.users-name').html(user.username);
+}
+
+function fillGroupsPanel(user){
+	$.get('/api/group/set', {data: user.groups}, function(resp){
+		console.log("RESP YO: ", resp);
+		for(var group in resp){
+			console.log(resp[group]);
+			$('.template.group-panel-template').children().clone().find('.panel-title').html(resp[group].title).end().appendTo('.groups-column');
+		}
+	});
 }
 
 

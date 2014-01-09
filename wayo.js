@@ -28,9 +28,10 @@ exports.addGroup = function(session, body){
   var newGroup = new Group(fields);
   newGroup.save(function(err, Resource) {
     if (err) {
-      response.send(500, {error: err});
+      //response.send(500, {error: err});
+      console.log("error creating new group in addGroup");
     }
-    response.send(Resource);
+    //response.send(Resource);
   });
 
   //Add new group to user
@@ -38,8 +39,22 @@ exports.addGroup = function(session, body){
 		if(err){
 			console.log("Error finding user in addGroup");
 		}
-		user.addGroup(newGroup._id);
+		foundUser.addGroup(newGroup._id);
   });
+};
+
+exports.getGroupSet = function(query, response){
+	console.log(query);
+	var Group = mongoose.model('Group');
+	Group.find({'_id' : {$in: query.data}}, function(err, docs){
+		if(err){
+			console.log("error getting groups in getGroupSet");
+		}
+		else{
+			console.log(docs);
+			response.send(docs);
+		}
+	});
 };
 /*
 var g = {

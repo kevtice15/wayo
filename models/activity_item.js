@@ -8,11 +8,11 @@ var ActivityItemSchema = new mongoose.Schema({
 });
 
 ActivityItemSchema.statics.findByUser = function(user_id){
-	return this.find({ user: mongoose.Types.ObjectId(user_id) });
+	return this.find({user: user_id});
 };
 
 ActivityItemSchema.statics.findByGroup = function(group_id){
-	return this.find({ group: mongoose.Types.ObjectId(group_id) });
+	return this.find({group: group_id});
 };
 
 mongoose.model("ActivityItem", ActivityItemSchema);
