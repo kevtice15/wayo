@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+	<meta charset="UTF-8">
+	<title>WAYO</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="lib/angular.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<div class="container">
+		<ul class="nav nav-pills">
+	  		<li class="active"><a href="#">Home</a></li>
+			<li><a href="#">Profile</a></li>
+			<li><a href="#">Messages</a></li>
+		</ul>
+		<div class="row">
+  		<div class="col-md-3">
+  			<div class="panel panel-default">
+  				<div class="panel-body">
+    				<img src="" class="profile-image"/>
+    				<p class="users-name"></p>
+    				<button id="new-group-button" type="button" class="btn btn-default">
+    					<span class="glyphicon glyphicon-plus"></span> New Group
+    				</button>
+    				<div id="newGroupForm" style="display: none;">
+    					<form role="form">
+							  <div class="form-group">
+							    <label for="nameInput">Name</label>
+							    <input type="text" class="form-control" id="group-name-input" placeholder="Enter name">
+							  </div>
+							  <button id="submit-new-group" type="submit" class="btn btn-default">Submit</button>
+							</form>
+							<button type="button" class="btn btn-default">Cancel</button>
+    				</div>
+  				</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">My Songs</div>
+  				<div class="panel-body">
+    				<ul class="list-group">
+						  <li class="list-group-item" ng-repeat="song in songs">{{song.user.first_name + ' ' + song.user.last_name + ' added ' + song.song.title + ' by ' + song.song.artist + ' to ' + song.group.title}}</li>
+						</ul>
+  				</div>
+				</div>
+  		</div>
+  		<div class="col-md-9">
+  			<div class="panel panel-default">
+  				<div class="panel-heading">
+    				<h3 class="panel-title">{{group.title}}</h3>
+  				</div>
+  				<div class="panel-body">
+  					<form id="addNewSongForm" class="form-horizontal" role="form">
+						  <div class="form-group">
+								<label for="title-input" class="col-sm-2 control-label">Title</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="title-input" placeholder="Enter Song Title"  ng-model="song.title" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="artist-input" class="col-sm-2 control-label">Artist</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="artist-input" placeholder="Enter Artist Name" ng-model="song.artist" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="albumInput" class="col-sm-2 control-label">Album</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="album-input" placeholder="Enter Album Name" ng-model="song.album" >
+								</div>
+							</div>
+							<button id="addNewSongButton" type="submit" class="btn btn-primary" ng-click="handleNewSong($event, song, group)"data-id="{{group.id}}">Add song</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="handleCloseModal($event)">Close</button>
+						</form>
+						<div class="list-group">
+						  <a href="#" class="list-group-item" ng-repeat="activity in group.activity">
+						    <h4 class="list-group-item-heading"></h4>
+						    <p class="list-group-item-text">{{activity.user.first_name + ' added ' + activity.song.title + ' by ' + activity.song.artist}}</p>
+						    <p class="list-group-item-text"></p>
+						  </a>
+						</div>
+  				</div>
+				</div>
+  		</div>
+		</div>
+	</div>
+	
+
+	<script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="imon-client.js"></script>
+</body>
+</html>
