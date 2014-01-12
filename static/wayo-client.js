@@ -1,11 +1,5 @@
 $(document).ready(function(){
-
-	$.get('/api/user', function(response){
-		console.log("RESP: ", response);
-		fillUserPanel(response);
-		fillGroupsPanel(response);
-	});
-
+	
 	$('#new-group-button').on('click', function(){
 		$('#newGroupForm').show();
 		$(this).addClass('disabled');
@@ -22,21 +16,35 @@ $(document).ready(function(){
 		});
 	});
 
-	$('#addNewSongForm').submit(function(event){
+	$('#addNewSongButton').on('click', function(){
+		console.log("Add new song!");
+		$('#addNewSongForm').show();
+	});
+
+	$('#saveNewSongButton').on('click', function(event){
 		var songTitle = $("#title-input").val();
 		var songArtist = $("#artist-input").val();
 		var songAlbum = $("#album-input").val();
+		var songYtLink = $("#yt-input").val();
+		console.log(songTitle);
+		console.log(songArtist);
+		console.log(songAlbum);
+		console.log(songYtLink);
+
 		if((songTitle !== null || songTitle !== '') && (songArtist !== null || songArtist !== '')){
 			console.log("Add new song clicked: ", event);
-			handleNewSong({title: songTitle, artist: songArtist, album: songAlbum});
+			console.log($(this).closest('.panel'));
+			addNewSong({title: songTitle, artist: songArtist, album: songAlbum, youTubeLink: songYtLink});
 		}
 		else{
 			console.log("Handle empty string");
 		}
 	});
 
-	//handleNewSong({title: "Yo Mama", artist: "Yo daddy", album: "Lettuce"});
-
+	$.get('/api/user', function(response){
+		fillUserPanel(response);
+		fillGroupsPanel(response);
+	});
 });
 
 function fillUserPanel(user){
@@ -45,12 +53,44 @@ function fillUserPanel(user){
 }
 
 function fillGroupsPanel(user){
+	function spacesToUnderscores(string){
+		return string.replace(' ', '_');
+	}
+
 	$.get('/api/group/set', {data: user.groups}, function(resp){
-		console.log("RESP YO: ", resp);
 		for(var group in resp){
-			console.log(resp[group]);
-			$('.template.group-panel-template').children().clone().find('.panel-title').html(resp[group].title).end().appendTo('.groups-column');
+			$('.template.group-panel-template')
+			.children()
+			.clone()
+			.find('.panel-title a')
+			.html(resp[group].title)
+			.attr("href", '#' + resp[group]._id)//TODO: If there are multiple groups with same name, the first one collapses
+			.end()
+			.attr("data-id", resp[group]._id) //TODO: this wouldn't work with .data() WHY?
+			.find('.panel-collapse')
+			.attr("id", resp[group]._id)
+			.end()
+			.find('.panel-body button')
+			.attr("data-target", "#addNewSongForm-" + resp[group]._id)
+			.end()
+			.find('#addNewSongForm')
+			.attr("id", "addNewSongForm-" + resp[group]._id)
+			.end()
+			.appendTo('.groups-column');
 		}
+	});
+}
+
+function addNewSong(song){
+	//TODO add group id to song before its posted
+	$.post('/api/songs', song, function(resp){
+		console.log(resp);
+		var titleTarget = $('#title-input').val("");
+		var artistTarget = $('#artist-input').val("");
+		var albumTarget = $('#album-input').val("");
+		var ytTarget = $('#yt-input').val("");
+
+		$('#addNewSongForm').hide();
 	});
 }
 

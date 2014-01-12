@@ -1,7 +1,7 @@
-var express = require('express')
-  , passport = require('passport')
-  , util = require('util')
-  , TwitterStrategy = require('passport-twitter').Strategy;
+var express = require('express'),
+  passport = require('passport'),
+  util = require('util'),
+  TwitterStrategy = require('passport-twitter').Strategy;
 
 var mongodb = require('mongodb');
 var mongoose = require('mongoose');
@@ -98,7 +98,11 @@ app.configure(function() {
   app.use(express.cookieParser());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.session({ secret: 'keyboard cat' }));
+  app.use(express.session({
+    secret: 'keyboard cat',
+    maxAge: new Date(Date.now() + 3600000), //1 Hour
+    expires: new Date(Date.now() + 3600000) //1 Hour
+  }));
   // Initialize Passport!  Also use passport.session() middleware, to support
   // persistent login sessions (recommended).
   app.use(passport.initialize());

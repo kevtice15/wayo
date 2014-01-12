@@ -51,7 +51,9 @@
 				</div>
   		</div>
   		<div class="col-md-9">
-  			<div class="groups-column"></div>
+  			<div class="groups-column">
+  				<!-- Group Lists inserted here -->
+  			</div>
   		</div>
 		</div>
 	</div>
@@ -60,44 +62,58 @@
 	<div class="templates" style="display: none;">
 		<div class="template group-panel-template">
 			<div class="panel panel-default">
-	  				<div class="panel-heading">
-	    				<h3 class="panel-title"></h3>
-	  				</div>
-	  				<div class="panel-body">
-	  					<form id="addNewSongForm" class="form-horizontal" role="form">
-							  <div class="form-group">
+	  		<div class="panel-heading">
+	    		<h3 class="panel-title">
+	    			<a data-toggle="collapse"></a>
+	    		</h3>
+	  		</div>
+	  		<div id="collapseOne" class="panel-collapse collapse in">
+		  		<div class="panel-body">
+		  			<button id="addNewSongButton" class="btn btn-primary" type="button" data-toggle="collapse">
+		          Add Song
+		      	</button>
+
+		  			<div id="addNewSongForm" class="collapse">
+		  				<form class="form-horizontal" role="form">
+								<div class="form-group">
 									<label for="title-input" class="col-sm-2 control-label">Title</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" id="title-input" placeholder="Enter Song Title"  ng-model="song.title" required>
+										<input type="text" class="form-control" id="title-input" placeholder="Enter Song Title">
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="artist-input" class="col-sm-2 control-label">Artist</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" id="artist-input" placeholder="Enter Artist Name" ng-model="song.artist" required>
+										<input type="text" class="form-control" id="artist-input" placeholder="Enter Artist Name">
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="albumInput" class="col-sm-2 control-label">Album</label>
+									<label for="album-input" class="col-sm-2 control-label">Album</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" id="album-input" placeholder="Enter Album Name" ng-model="song.album" >
+										<input type="text" class="form-control" id="album-input" placeholder="Enter Album Name">
 									</div>
 								</div>
-								<button id="addNewSongButton" type="submit" class="btn btn-primary" ng-click="handleNewSong($event, song, group)"data-id="{{group.id}}">Add song</button>
-								<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="handleCloseModal($event)">Close</button>
+								<div class="form-group">
+									<label for="yt-input" class="col-sm-2 control-label">YouTube Link</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="yt-input" placeholder="Enter YouTube Link">
+									</div>
+								</div>
+								<button id="saveNewSongButton" class="btn btn-primary" type="button">Save</button>
 							</form>
-							<div class="list-group">
-							  <a href="#" class="list-group-item" ng-repeat="activity in group.activity">
-							    <h4 class="list-group-item-heading"></h4>
-							    <p class="list-group-item-text">{{activity.user.first_name + ' added ' + activity.song.title + ' by ' + activity.song.artist}}</p>
-							    <p class="list-group-item-text"></p>
-							  </a>
-							</div>
-	  				</div>
-					</div>
+		  			</div>
+						<div class="list-group">
+							<a href="#" class="list-group-item">
+								<h4 class="list-group-item-heading"></h4>
+								<p class="list-group-item-text">{{activity.user.first_name + ' added ' + activity.song.title + ' by ' + activity.song.artist}}</p>
+								<p class="list-group-item-text"></p>
+							</a>
+						</div>
+		  		</div>
+		  	</div>
+			</div>
 		</div>
 	</div>
-					
 
 	<script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
