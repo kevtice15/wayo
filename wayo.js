@@ -3,14 +3,31 @@ var mongoose = require('mongoose');
 var EventEmitter = require('events').EventEmitter;
 var emitter = new EventEmitter();
 
-emitter.on('addGroup', function(group, user_id){
-	console.log("Add group event");
-	//create new activity item
-	var newAI = new ActivityItem(user_id, undefined, group.id);
-	activity_items.push(newAI);
-	console.log("Activity items: ", activity_items);
-	//add to user_groups
-	user_groups.push({group_id: group.id, user_id: user_id});
+emitter.on('addSong', function(user_id, song){
+	var ActivityItem = mongoose.model('ActivityItem');
+	console.log("Add song event");
+	var fields = {user: user_id, song: song._id, group: song.group_id};
+	console.log(fields);
+	var newAI = new ActivityItem(fields);
+	newAI.save(function(err, AI){
+		if(err){
+			console.log("error creating new song activity item");
+		}
+		console.log("new AI", AI);
+	});
+
+	var Group = mongoose.model('Group');
+	Group.findById(song.group_id, function(err, doc){
+		if(err){
+			console.error("error finding group to ad AI to");
+		}
+		doc.addActivityItem(newAI._id);
+		doc.save(function(err, AI){
+			if(err){
+				console.error("saving new AI to group");
+			}
+		});
+	});
 });
 
 exports.addGroup = function(session, body){
@@ -54,6 +71,36 @@ exports.getGroupSet = function(query, response){
 			console.log(docs);
 			response.send(docs);
 		}
+	});
+};
+
+exports.addSong = function(request, response){
+	var Song = mongoose.model('Song');
+    var fields = request.body;
+
+    var newSong = new Song(fields);
+    newSong.save(function(err, Song) {
+        if (err) {
+            response.send(500, {error: err});
+        }
+        response.send(Song);
+    });
+  emitter.emit('addSong', request.session.passport.user, newSong);
+};
+
+exports.getGroupActivity = function(request, response){
+	var Group = mongoose.model('Group');
+	var query = request.query;
+	console.log("QUERY: ", request.query);
+	Group.findById(request.query.data, function(err, foundGroup){
+		if(err){
+			response.send(500, {error: err});
+		}
+		console.log("FOUND GROUP:", foundGroup);
+		foundGroup.getActivityItems(function(ais){
+			console.log("GOT THESE AIs ", ais);
+			response.send(ais);
+		});
 	});
 };
 /*

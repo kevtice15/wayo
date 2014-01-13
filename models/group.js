@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var GroupSchema = new mongoose.Schema({
 	title: String,
-	acivity_items: [mongoose.Schema.ObjectId],
+	activity_items: [mongoose.Schema.ObjectId],
 	members: [mongoose.Schema.ObjectId]
 });
 
@@ -23,5 +23,17 @@ GroupSchema.methods.addMember = function(user_id){
 		}
 	});
 };
+
+GroupSchema.methods.getActivityItems = function(callback){
+	var AI = mongoose.model('ActivityItem');
+	AI.find({'_id': {$in: this.activity_items}}, function(err, docs){
+		if(err){
+			console.log("error querying for AIs for a group");
+		}
+		callback(docs);
+	});
+};
+
+
 
 mongoose.model("Group", GroupSchema);

@@ -1,5 +1,9 @@
 $(document).ready(function(){
-	
+	$.get('/api/user', function(response){
+		fillUserPanel(response);
+		fillGroupsPanel(response);
+	});
+
 	$('#new-group-button').on('click', function(){
 		$('#newGroupForm').show();
 		$(this).addClass('disabled');
@@ -16,12 +20,7 @@ $(document).ready(function(){
 		});
 	});
 
-	$('#addNewSongButton').on('click', function(){
-		console.log("Add new song!");
-		$('#addNewSongForm').show();
-	});
-
-	$('#saveNewSongButton').on('click', function(event){
+	$('.groups-column').on('click', '#saveNewSongButton', function(event){
 		var songTitle = $("#title-input").val();
 		var songArtist = $("#artist-input").val();
 		var songAlbum = $("#album-input").val();
@@ -32,18 +31,12 @@ $(document).ready(function(){
 		console.log(songYtLink);
 
 		if((songTitle !== null || songTitle !== '') && (songArtist !== null || songArtist !== '')){
-			console.log("Add new song clicked: ", event);
-			console.log($(this).closest('.panel'));
-			addNewSong({title: songTitle, artist: songArtist, album: songAlbum, youTubeLink: songYtLink});
+			console.log("Posting song: ", {title: songTitle, artist: songArtist, album: songAlbum, youTubeLink: songYtLink, group_id: $(this).closest('.panel').data('id')});
+			addNewSong({title: songTitle, artist: songArtist, album: songAlbum, youTubeLink: songYtLink, group_id: $(this).closest('.panel').data('id')});
 		}
 		else{
 			console.log("Handle empty string");
 		}
-	});
-
-	$.get('/api/user', function(response){
-		fillUserPanel(response);
-		fillGroupsPanel(response);
 	});
 });
 
@@ -57,15 +50,21 @@ function fillGroupsPanel(user){
 		return string.replace(' ', '_');
 	}
 
+	function getGroupActivity(id){
+		$.get('/api/groupActivity', {data: id}, function(resp){
+			console.log(resp);
+		});
+	}
+
 	$.get('/api/group/set', {data: user.groups}, function(resp){
 		for(var group in resp){
 			$('.template.group-panel-template')
-			.children()
-			.clone()
-			.find('.panel-title a')
-			.html(resp[group].title)
-			.attr("href", '#' + resp[group]._id)//TODO: If there are multiple groups with same name, the first one collapses
-			.end()
+			.children()//Get the html in the template
+			.clone()//Make a copy
+			.find('.panel-title a')//Find the panel title anchor
+			.html(resp[group].title)//Make it say the group name
+			.attr("href", '#' + resp[group]._id)//Throw the group id on it for collapsing
+			.end()//Go back to top level of template html
 			.attr("data-id", resp[group]._id) //TODO: this wouldn't work with .data() WHY?
 			.find('.panel-collapse')
 			.attr("id", resp[group]._id)
@@ -77,13 +76,20 @@ function fillGroupsPanel(user){
 			.attr("id", "addNewSongForm-" + resp[group]._id)
 			.end()
 			.appendTo('.groups-column');
+
+			getGroupActivity(resp[group]._id);
+			// $.get('/api/groupActivity', {data: resp[group]._id}, function(resp){
+			// 	console.log(resp);
+			// });
 		}
+
+
 	});
 }
 
 function addNewSong(song){
 	//TODO add group id to song before its posted
-	$.post('/api/songs', song, function(resp){
+	$.post('/api/songs/add', song, function(resp){
 		console.log(resp);
 		var titleTarget = $('#title-input').val("");
 		var artistTarget = $('#artist-input').val("");

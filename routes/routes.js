@@ -23,6 +23,10 @@ module.exports = function(app, wayo){
 		response.sendfile("static/lib/" + request.params.filename);
 	});
 
+	app.get("/static/bootstrap/fonts/:filename", function(request, response){
+		response.sendfile("static/bootstrap/fonts/" + request.params.filename);
+	});
+
 	//User routes
 	app.post("/api/users", function(request, response){
 		users.create(request, response);
@@ -128,6 +132,11 @@ module.exports = function(app, wayo){
 		activity_items.delete(request, response);
 	});
 
+
+
+
+
+
 	app.get("/api/users/:id", function(request, response){
 		users.retrieve(request, response);
 	});
@@ -138,6 +147,14 @@ module.exports = function(app, wayo){
 
 	app.get("/api/group/set", function(request, response){
 		wayo.getGroupSet(request.query, response);
+	});
+
+	app.post("/api/songs/add", function(request, response){
+		wayo.addSong(request, response);
+	});
+
+	app.get("/api/groupActivity", function(request, response){
+		wayo.getGroupActivity(request, response);
 	});
 
 };
