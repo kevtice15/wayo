@@ -27,6 +27,14 @@ module.exports = function(app, wayo){
 		response.sendfile("static/bootstrap/fonts/" + request.params.filename);
 	});
 
+	app.get("/static/stylesheets/:filename", function(request, response){
+		response.sendfile("static/stylesheets/" + request.params.filename);
+	});
+
+	app.get("/static/javascripts/:filename", function(request, response){
+		response.sendfile("static/javascripts/" + request.params.filename);
+	});
+
 	//User routes
 	app.post("/api/users", function(request, response){
 		users.create(request, response);
@@ -135,7 +143,9 @@ module.exports = function(app, wayo){
 
 
 
-
+	app.get("/api/nuke/the/db", function(request, response){
+		wayo.nukeTheDb(request, response);
+	});
 
 	app.get("/api/users/:id", function(request, response){
 		users.retrieve(request, response);

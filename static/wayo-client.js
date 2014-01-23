@@ -50,14 +50,18 @@ function fillGroupsPanel(user){
 		return string.replace(' ', '_');
 	}
 
-	function getGroupActivity(id){
+	function getGroupActivity(id, callback){
 		$.get('/api/groupActivity', {data: id}, function(resp){
-			console.log(resp);
+			callback (resp);
 		});
+
+
 	}
 
 	$.get('/api/group/set', {data: user.groups}, function(resp){
 		for(var group in resp){
+			var currentGroupActivity = getGroupActivity(resp[group]._id);
+			console.log("adding activity: ", currentGroupActivity);
 			$('.template.group-panel-template')
 			.children()//Get the html in the template
 			.clone()//Make a copy
@@ -75,12 +79,12 @@ function fillGroupsPanel(user){
 			.find('#addNewSongForm')
 			.attr("id", "addNewSongForm-" + resp[group]._id)
 			.end()
+			.find('.list-group-item-text')
+			.html(currentGroupActivity)
+			.end()
 			.appendTo('.groups-column');
 
-			getGroupActivity(resp[group]._id);
-			// $.get('/api/groupActivity', {data: resp[group]._id}, function(resp){
-			// 	console.log(resp);
-			// });
+			$('')
 		}
 
 

@@ -34,6 +34,29 @@ GroupSchema.methods.getActivityItems = function(callback){
 	});
 };
 
+GroupSchema.methods.getAIText = function(callback){
+	var User = mongoose.model("User");
+	var Song = mongoose.model("Song");
+	var AI = mongoose.model('ActivityItem');
 
+	var userName = "";
+	var songName = "";
+
+	AI.find({'_id': {$in: this.activity_items}}, function(err, docs){
+		if(err){
+			console.log("error querying for AIs for a group");
+		}
+		else{
+			console.log("FOUND THESE AIs FOR TEXT: ", docs);
+			var resp = {};
+			for(var doc in docs){
+				console.log("FOUND AI TEXT: ", docs[doc].getGroupTextVersion());
+				console.log("AI TEXT TYPE: ", typeof docs[doc]);
+				resp[docs[doc]._id] = docs[doc].getGroupTextVersion();
+			}
+			callback(resp);
+		}
+	});
+};
 
 mongoose.model("Group", GroupSchema);
